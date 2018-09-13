@@ -29,13 +29,14 @@ describe Kitchen::Driver::Digitalocean do
   let(:state) { {} }
   let(:instance_name) { 'potatoes' }
   let(:platform_name) { 'ubuntu' }
+  let(:platform_image) { }
 
   let(:instance) do
     double(
       name: instance_name,
       logger: logger,
       to_str: 'instance',
-      platform: double(name: platform_name)
+      platform: double(name: platform_name, image: platform_image),
     )
   end
 
@@ -86,6 +87,15 @@ describe Kitchen::Driver::Digitalocean do
 
     context 'platform name matches a known platform => slug mapping' do
       let(:platform_name) { 'ubuntu-17' }
+
+      it 'matches the correct image slug' do
+        expect(driver[:image]).to eq('ubuntu-17-10-x64')
+      end
+    end
+
+    context 'platform.image overrides platform.name with platform => slug mapping' do
+      let(:platform_name) { 'semantic-name' }
+      let(:platform_image) { 'ubuntu-17' }
 
       it 'matches the correct image slug' do
         expect(driver[:image]).to eq('ubuntu-17-10-x64')

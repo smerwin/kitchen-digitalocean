@@ -125,9 +125,12 @@ module Kitchen
       # This method attempts to fetch the platform from a list of well-known
       # platform => slug mappings, and falls back to using just the platform as
       # provided if it can't find a mapping.
+      # Platform is determined from platform.image if present in the config,
+      # otherwise we use platform.name.
       def default_image
-        platform_to_slug_mapping.fetch(instance.platform.name,
-                                       instance.platform.name)
+          platform_image = (instance.platform.image.is_a? String) ?
+                            instance.platform.image : instance.platform.name
+          platform_to_slug_mapping.fetch(platform_image, platform_image)
       end
 
       # Generate what should be a unique server name up to 63 total chars
